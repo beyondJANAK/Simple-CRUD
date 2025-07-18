@@ -1,0 +1,45 @@
+version: "1.0"
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: CRUD
+      POSTGRES_USER: Janak
+      POSTGRES_PASSWORD: Janak
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: postgres
+      PMA_PORT: 5432
+      PMA_USER: Janak
+      PMA_PASSWORD: Janak
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+
+  springboot:
+    build: .
+    container_name: SpringBootApp
+    environment:
+      SERVER_PORT: 8090
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/CRUD
+      SPRING_DATASOURCE_USERNAME: Janak
+      SPRING_DATASOURCE_PASSWORD: Janak
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      - postgres
+    ports:
+        - "8090:8090"
+
+volumes:
+    postgres_data:
